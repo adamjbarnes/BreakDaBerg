@@ -49,10 +49,10 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		// create a Rectangle to logically represent the bucket
 		bucket = new Rectangle();
-		bucket.x = 800 / 2 - 64 / 2; // center the bucket horizontally
+		bucket.x = 800 / 2 - 50 / 2; // center the bucket horizontally
 		bucket.y = 20; // bottom left corner of the bucket is 20 pixels above the bottom screen edge
-		bucket.width = 64;
-		bucket.height = 64;
+		bucket.width = 50;
+		bucket.height = 112;
 
 		// create the raindrops array and spawn the first raindrop
 		raindrops = new Array<Rectangle>();
@@ -63,8 +63,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		Rectangle raindrop = new Rectangle();
 		raindrop.x = MathUtils.random(0, 800-64);
 		raindrop.y = 480;
-		raindrop.width = 64;
-		raindrop.height = 64;
+		raindrop.width = 75;
+		raindrop.height = 129;
 		raindrops.add(raindrop);
 		lastDropTime = TimeUtils.nanoTime();
 	}
@@ -106,14 +106,14 @@ public class MyGdxGame extends ApplicationAdapter {
 		if(bucket.x > 800 - 64) bucket.x = 800 - 64;
 
 		// check if we need to create a new raindrop
-		if(TimeUtils.nanoTime() - lastDropTime > 1000000000) spawnRaindrop();
+		if(TimeUtils.nanoTime() - lastDropTime > 2000000000) spawnRaindrop();
 
 		// move the raindrops, remove any that are beneath the bottom edge of
 		// the screen or that hit the bucket. In the latter case we play back
 		// a sound effect as well.
 		for (Iterator<Rectangle> iter = raindrops.iterator(); iter.hasNext(); ) {
 			Rectangle raindrop = iter.next();
-			raindrop.y -= 50 * Gdx.graphics.getDeltaTime();
+			raindrop.y -= 100 * Gdx.graphics.getDeltaTime();
 			if(raindrop.y + 64 < 0) iter.remove();
 			if(raindrop.overlaps(bucket)) {
 			//	dropSound.play();
