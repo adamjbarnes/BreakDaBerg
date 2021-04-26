@@ -2,17 +2,23 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MainMenuScreen implements Screen {
 
     final MyGdxGame game;
+    Music MainMenuBackgroundMusic;
 
     OrthographicCamera camera;
 
     public MainMenuScreen(final MyGdxGame game) {
         this.game = game;
+
+        // load the 8-bit Semper Paratus background music
+        MainMenuBackgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("SemperParatus(AlwaysReady).mp3"));
+        MainMenuBackgroundMusic.setLooping(true);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
@@ -42,6 +48,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
+        MainMenuBackgroundMusic.play();
     }
 
     @Override
@@ -58,6 +65,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
+        MainMenuBackgroundMusic.dispose();
     }
 
 }
