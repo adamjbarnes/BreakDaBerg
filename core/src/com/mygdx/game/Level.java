@@ -16,26 +16,33 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Iterator;
 
-public class GameScreen implements Screen {
+public class Level implements Screen {
     final MyGdxGame game;
 
     Texture bergImage;
     Texture boatImage;
+    Texture whaleImage;
     Sound bergSound;
     Music oceanMusic;
     //SpriteBatch batch;
     OrthographicCamera camera;
     Rectangle boat;
     Array<Rectangle> bergs;
+    Array<Rectangle> whales;
+    long spawntime;
     long lastbergTime;
+    long lastwhaleTime;
     int bergsGathered;
 
 
-    public GameScreen(final MyGdxGame game) {
+
+    public Level(final MyGdxGame game) {
         this.game = game;
+        spawntime = 1000000000;
         // load the images for the droplet and the bucket, 64x64 pixels each
         bergImage = new Texture(Gdx.files.internal("iceberg.png"));
         boatImage = new Texture(Gdx.files.internal("boat.png"));
+        whaleImage = new Texture(Gdx.files.internal("whale.png"));
 
         // load the drop sound effect and the rain background "music"
         bergSound = Gdx.audio.newSound(Gdx.files.internal("bergcrash.mp3"));
@@ -54,9 +61,15 @@ public class GameScreen implements Screen {
         boat.width = 94;
         boat.height = 70;
 
-        // create the raindrops array and spawn the first raindrop
         bergs = new Array<Rectangle>();
         spawnBerg();
+        
+        whales = new Array<Rectangle>();
+        spawnWhale();
+        /*if(level == 2) {
+            whales = new Array<Rectangle>();
+            spawnWhale();
+        }*/
     }
 
     private void spawnBerg() {
@@ -67,6 +80,16 @@ public class GameScreen implements Screen {
         berg.height = 32;
         bergs.add(berg);
         lastbergTime = TimeUtils.nanoTime();
+    }
+
+    private void spawnWhale() {
+        Rectangle whale = new Rectangle();
+        whale.x = MathUtils.random(0, 800-64);
+        whale.y = 480;
+        whale.width = 32;
+        whale.height = 32;
+        whales.add(whale);
+        lastwhaleTime = TimeUtils.nanoTime();
     }
 
     @Override
@@ -84,13 +107,16 @@ public class GameScreen implements Screen {
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
 
-        // begin a new batch and draw the bucket and
-        // all drops
+        // begin a new batch and draw the boat and
+        // all bergs
         game.batch.begin();
         game.font.draw(game.batch, "Bergs hit: " + bergsGathered, 0, 480);
         game.batch.draw(boatImage, boat.x, boat.y, boat.width, boat.height);
-        for (Rectangle raindrop : bergs) {
-            game.batch.draw(bergImage, raindrop.x, raindrop.y);
+        for (Rectangle iceberg : bergs) {
+            game.batch.draw(bergImage, iceberg.x, iceberg.y);
+        }
+        for (Rectangle freewilly : whales) {
+            game.batch.draw(whaleImage, freewilly.x, freewilly.y);
         }
         game.batch.end();
 
@@ -108,21 +134,36 @@ public class GameScreen implements Screen {
         if(boat.x < 0) boat.x = 0;
         if(boat.x > 800 - 64) boat.x = 800 - 64;
 
-        // check if we need to create a new raindrop
-        if(TimeUtils.nanoTime() - lastbergTime > 1000000000) spawnBerg();
+        // check if we need to create a new iceberg and whale
+        if(TimeUtils.nanoTime() - lastbergTime > spawntime) spawnBerg();
+        if(TimeUtils.nanoTime() - lastwhaleTime > spawntime) spawnWhale();
 
-        // move the raindrops, remove any that are beneath the bottom edge of
-        // the screen or that hit the bucket. In the latter case we play back
+
         // a sound effect as well.
         for (Iterator<Rectangle> iter = bergs.iterator(); iter.hasNext(); ) {
-            Rectangle bergs = iter.next();
-            bergs.y -= 200 * Gdx.graphics.getDeltaTime();
-            if(bergs.y + 64 < 0) iter.remove();
-            if(bergs.overlaps(boat)) {
+            Rectangle bergz = iter.next();
+            bergz.y -= 200 * Gdx.graphics.getDeltaTime();
+            if(bergz.y + 64 < 0) iter.remove();
+            if(bergz.overlaps(boat)) {
                 bergsGathered++;
                 bergSound.play();
                 iter.remove();
             }
+        }
+        for (Iterator<Rectangle> iter = whales.iterator(); iter.hasNext(); ) {
+            Rectangle whales = iter.next();
+            whales.y -= 200 * Gdx.graphics.getDeltaTime();
+            if(whales.y + 64 < 0) iter.remove();
+            if(whales.overlaps(boat)) {
+                bergsGathered--;
+                bergSound.play();
+                iter.remove();
+            }
+        }
+        if (bergsGathered==10) {
+            Level2 level2 = new Level2(game);
+            game.setScreen(level2);
+            dispose();
         }
     }
     @Override
