@@ -14,6 +14,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import java.awt.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Iterator;
 
 public class GameScreen implements Screen {
@@ -21,6 +24,7 @@ public class GameScreen implements Screen {
 
     Texture bergImage;
     Texture boatImage;
+    Image bg;
     Sound bergSound;
     Music oceanMusic;
     //SpriteBatch batch;
@@ -76,6 +80,14 @@ public class GameScreen implements Screen {
         // blue and alpha component in the range [0,1]
         // of the color to be used to clear the screen.
         ScreenUtils.clear(0, 0, 0.2f, 1);
+        URL urlBG = null;
+        try {
+            urlBG = new URL("http://pscode.org/media/stromlo2.jpg");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        bg = Toolkit.getDefaultToolkit().createImage(urlBG);
+
 
         // tell the camera to update its matrices.
         camera.update();
@@ -123,6 +135,10 @@ public class GameScreen implements Screen {
                 bergSound.play();
                 iter.remove();
             }
+        }
+        if (bergsGathered >= 5) {
+            game.setScreen(new GameOverScreen(game));
+            dispose();
         }
     }
     @Override
