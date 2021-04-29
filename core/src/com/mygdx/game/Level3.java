@@ -16,33 +16,36 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Iterator;
 
-public class Level implements Screen {
+public class Level3 implements Screen {
     final MyGdxGame game;
 
     Texture bergImage;
     Texture boatImage;
-    //Texture whaleImage;
+    Texture whaleImage;
+    Texture buoyImage;
     Sound bergSound;
     Music oceanMusic;
     //SpriteBatch batch;
     OrthographicCamera camera;
     Rectangle boat;
     Array<Rectangle> bergs;
-    //Array<Rectangle> whales;
-    long spawntime;
+    Array<Rectangle> whales;
+    Array<Rectangle> buoys;
+    double spawntime;
     long lastbergTime;
-    //long lastwhaleTime;
+    long lastwhaleTime;
+    long lastbuoyTime;
     int bergsGathered;
 
 
-
-    public Level(final MyGdxGame game) {
+    public Level3(final MyGdxGame game) {
         this.game = game;
-        spawntime = 1000000000;
+        spawntime = 1000000000*0.9;
         // load the images for the droplet and the bucket, 64x64 pixels each
         bergImage = new Texture(Gdx.files.internal("iceberg.png"));
         boatImage = new Texture(Gdx.files.internal("boat.png"));
-        //whaleImage = new Texture(Gdx.files.internal("whale.png"));
+        whaleImage = new Texture(Gdx.files.internal("whale.png"));
+        buoyImage =  new Texture(Gdx.files.internal("buoy.png"));
 
         // load the drop sound effect and the rain background "music"
         bergSound = Gdx.audio.newSound(Gdx.files.internal("bergcrash.mp3"));
@@ -63,10 +66,12 @@ public class Level implements Screen {
 
         bergs = new Array<Rectangle>();
         spawnBerg();
-        
-        //whales = new Array<Rectangle>();
-        //spawnWhale();
 
+        whales = new Array<Rectangle>();
+        spawnWhale();
+
+        buoys = new Array<Rectangle>();
+        spawnBuoy();
     }
 
     private void spawnBerg() {
@@ -79,7 +84,7 @@ public class Level implements Screen {
         lastbergTime = TimeUtils.nanoTime();
     }
 
-    /*private void spawnWhale() {
+    private void spawnWhale() {
         Rectangle whale = new Rectangle();
         whale.x = MathUtils.random(0, 800-64);
         whale.y = 480;
@@ -87,7 +92,17 @@ public class Level implements Screen {
         whale.height = 32;
         whales.add(whale);
         lastwhaleTime = TimeUtils.nanoTime();
-    }*/
+    }
+
+    private void spawnBuoy() {
+        Rectangle buoy = new Rectangle();
+        buoy.x = MathUtils.random(0, 800-64);
+        buoy.y = 480;
+        buoy.width = 16;
+        buoy.height = 16;
+        buoys.add(buoy);
+        lastbuoyTime = TimeUtils.nanoTime();
+    }
 
     @Override
     public void render(float delta) {
@@ -112,9 +127,12 @@ public class Level implements Screen {
         for (Rectangle iceberg : bergs) {
             game.batch.draw(bergImage, iceberg.x, iceberg.y);
         }
-        /*for (Rectangle freewilly : whales) {
+        for (Rectangle freewilly : whales) {
             game.batch.draw(whaleImage, freewilly.x, freewilly.y);
-        }*/
+        }
+        for (Rectangle redcan : buoys) {
+            game.batch.draw(buoyImage, redcan.x, redcan.y);
+        }
         game.batch.end();
 
         // process user input
@@ -133,7 +151,8 @@ public class Level implements Screen {
 
         // check if we need to create a new iceberg and whale
         if(TimeUtils.nanoTime() - lastbergTime > spawntime) spawnBerg();
-        //if(TimeUtils.nanoTime() - lastwhaleTime > spawntime) spawnWhale();
+        if(TimeUtils.nanoTime() - lastwhaleTime > spawntime) spawnWhale();
+        if(TimeUtils.nanoTime() - lastbuoyTime > spawntime) spawnBuoy();
 
 
         // a sound effect as well.
@@ -147,7 +166,7 @@ public class Level implements Screen {
                 iter.remove();
             }
         }
-        /*for (Iterator<Rectangle> iter = whales.iterator(); iter.hasNext(); ) {
+        for (Iterator<Rectangle> iter = whales.iterator(); iter.hasNext(); ) {
             Rectangle whales = iter.next();
             whales.y -= 200 * Gdx.graphics.getDeltaTime();
             if(whales.y + 64 < 0) iter.remove();
@@ -156,13 +175,20 @@ public class Level implements Screen {
                 bergSound.play();
                 iter.remove();
             }
-        }*/
-        if (bergsGathered==10) {
-            Level2 level2 = new Level2(game);
-            game.setScreen(level2);
-            dispose();
         }
+        for (Iterator<Rectangle> iter = buoys.iterator(); iter.hasNext(); ) {
+            Rectangle buoys = iter.next();
+            buoys.y -= 200 * Gdx.graphics.getDeltaTime();
+            if(buoys.y + 64 < 0) iter.remove();
+            if(buoys.overlaps(boat)) {
+                bergsGathered--;
+                bergSound.play();
+                iter.remove();
+            }
+        }
+
     }
+
     @Override
     public void resize(int width, int height) {
     }

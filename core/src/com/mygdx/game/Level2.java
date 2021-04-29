@@ -37,7 +37,7 @@ public class Level2 implements Screen {
 
     public Level2(final MyGdxGame game) {
         this.game = game;
-        spawntime = 1000000000*0.99;
+        spawntime = 1000000000*0.95;
         // load the images for the droplet and the bucket, 64x64 pixels each
         bergImage = new Texture(Gdx.files.internal("iceberg.png"));
         boatImage = new Texture(Gdx.files.internal("boat.png"));
@@ -159,12 +159,11 @@ public class Level2 implements Screen {
                 iter.remove();
             }
         }
-        /*if (bergsGathered==10 && Level2) {
-            Level level2 = new Level(game,1000000000,2);
-            game.setScreen(level2);
-            Level2=false;
+        if (bergsGathered==10) {
+            Level3 level = new Level3(game);
+            game.setScreen(level);
             dispose();
-        }*/
+        }
     }
     @Override
     public void resize(int width, int height) {
