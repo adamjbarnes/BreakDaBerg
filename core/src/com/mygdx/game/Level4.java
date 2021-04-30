@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Iterator;
 
-public class Level3 implements Screen {
+public class Level4 implements Screen {
     final MyGdxGame game;
 
     Texture bergImage;
@@ -38,9 +38,9 @@ public class Level3 implements Screen {
     int bergsGathered;
 
 
-    public Level3(final MyGdxGame game) {
+    public Level4(final MyGdxGame game) {
         this.game = game;
-        spawntime = 1000000000*0.9;
+        spawntime = 1000000000*0.87;
         // load the images for the droplet and the bucket, 64x64 pixels each
         bergImage = new Texture(Gdx.files.internal("iceberg.png"));
         boatImage = new Texture(Gdx.files.internal("boat.png"));
@@ -185,11 +185,7 @@ public class Level3 implements Screen {
                 iter.remove();
             }
         }
-        if (bergsGathered==10) {
-            Level4 level = new Level4(game);
-            game.setScreen(level);
-            dispose();
-        }
+
     }
 
     @Override

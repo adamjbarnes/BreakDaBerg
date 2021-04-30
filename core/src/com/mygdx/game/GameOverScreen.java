@@ -6,14 +6,13 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class MainMenuScreen implements Screen {
-
+public class GameOverScreen implements Screen {
     final MyGdxGame game;
     Music MainMenuBackgroundMusic;
 
     OrthographicCamera camera;
 
-    public MainMenuScreen(final MyGdxGame game) {
+    public GameOverScreen(final MyGdxGame game) {
         this.game = game;
 
         // load the 8-bit Semper Paratus background music
@@ -32,13 +31,12 @@ public class MainMenuScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
-        game.font.draw(game.batch, "Welcome to BreakDaBerg!!! ", 100, 150);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
+        game.font.draw(game.batch, "You Lost the mother fucking game ", 100, 150);
+        game.font.draw(game.batch, "Tap anywhere to exit!", 100, 100);
         game.batch.end();
 
         if (Gdx.input.isTouched()) {
-            Level level1 = new Level(game);
-            game.setScreen(level1);
+            game.setScreen(new Level(game));
             dispose();
         }
     }
@@ -68,5 +66,4 @@ public class MainMenuScreen implements Screen {
     public void dispose() {
         MainMenuBackgroundMusic.dispose();
     }
-
 }

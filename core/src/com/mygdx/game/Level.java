@@ -52,7 +52,7 @@ public class Level implements Screen {
 
         // create the camera
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
+        camera.setToOrtho(false, 1600, 960);
 
         // create a Rectangle to logically represent the bucket
         boat = new Rectangle();
@@ -71,23 +71,13 @@ public class Level implements Screen {
 
     private void spawnBerg() {
         Rectangle berg = new Rectangle();
-        berg.x = MathUtils.random(0, 800-64);
-        berg.y = 480;
+        berg.x = MathUtils.random(0, 1600-64);
+        berg.y = 960;
         berg.width = 32;
         berg.height = 32;
         bergs.add(berg);
         lastbergTime = TimeUtils.nanoTime();
     }
-
-    /*private void spawnWhale() {
-        Rectangle whale = new Rectangle();
-        whale.x = MathUtils.random(0, 800-64);
-        whale.y = 480;
-        whale.width = 32;
-        whale.height = 32;
-        whales.add(whale);
-        lastwhaleTime = TimeUtils.nanoTime();
-    }*/
 
     @Override
     public void render(float delta) {
@@ -107,7 +97,7 @@ public class Level implements Screen {
         // begin a new batch and draw the boat and
         // all bergs
         game.batch.begin();
-        game.font.draw(game.batch, "Bergs hit: " + bergsGathered, 0, 480);
+        game.font.draw(game.batch, "Points: " + bergsGathered, 0, 940);
         game.batch.draw(boatImage, boat.x, boat.y, boat.width, boat.height);
         for (Rectangle iceberg : bergs) {
             game.batch.draw(bergImage, iceberg.x, iceberg.y);
@@ -129,7 +119,7 @@ public class Level implements Screen {
 
         // make sure the bucket stays within the screen bounds
         if(boat.x < 0) boat.x = 0;
-        if(boat.x > 800 - 64) boat.x = 800 - 64;
+        if(boat.x > 1600 - 64) boat.x = 1600 - 64;
 
         // check if we need to create a new iceberg and whale
         if(TimeUtils.nanoTime() - lastbergTime > spawntime) spawnBerg();
