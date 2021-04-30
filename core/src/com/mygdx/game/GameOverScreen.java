@@ -22,7 +22,7 @@ public class GameOverScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1600, 960);
     }
-
+//yo
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0.2f, 1);
